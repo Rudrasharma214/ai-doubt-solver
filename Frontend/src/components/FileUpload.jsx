@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Upload, File, X, CheckCircle, AlertCircle } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 const FileUpload = ({ onFileUpload, uploading }) => {
   const [uploadProgress, setUploadProgress] = useState(0)
@@ -9,13 +10,13 @@ const FileUpload = ({ onFileUpload, uploading }) => {
 
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
     setDragActive(false)
-    
+
     if (rejectedFiles.length > 0) {
       const rejection = rejectedFiles[0]
       if (rejection.errors[0]?.code === 'file-too-large') {
-        alert('File is too large. Maximum size is 10MB.')
+        toast.error('File is too large. Maximum size is 10MB.')
       } else if (rejection.errors[0]?.code === 'file-invalid-type') {
-        alert('Invalid file type. Please upload PDF, DOC, DOCX, JPG, JPEG, PNG, or GIF files.')
+        toast.error('Invalid file type. Please upload PDF, DOC, DOCX, JPG, JPEG, PNG, or GIF files.')
       }
       return
     }
@@ -84,9 +85,8 @@ const FileUpload = ({ onFileUpload, uploading }) => {
       {/* Dropzone */}
       <div
         {...getRootProps()}
-        className={`dropzone ${isDragActive || dragActive ? 'active' : ''} ${
-          uploading ? 'pointer-events-none opacity-50' : 'cursor-pointer'
-        }`}
+        className={`dropzone ${isDragActive || dragActive ? 'active' : ''} ${uploading ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+          }`}
       >
         <input {...getInputProps()} />
         <div className="flex flex-col items-center space-y-3 sm:space-y-4 p-4">

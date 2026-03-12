@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useRegister } from '../hooks/Auth/useMutation.js';
 
 const Register = () => {
@@ -72,6 +73,7 @@ const Register = () => {
       {
         onSuccess: (data) => {
           setIsSubmitting(false);
+          toast.success('Account created! Please verify your email.');
           // Navigate to email verification with userId
           if (data.data?.userId || data.data?.id) {
             const userId = data.data.userId || data.data.id;
@@ -83,19 +85,21 @@ const Register = () => {
         },
         onError: (error) => {
           setIsSubmitting(false);
-          setErrors({ submit: error.response?.data?.message || 'Registration failed' });
+          const message = error.response?.data?.message || 'Registration failed';
+          toast.error(message);
+          setErrors({ submit: message });
         }
       }
     );
   };
 
-//   if (isLoading) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center">
-//         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-//       </div>
-//     );
-//   }
+  //   if (isLoading) {
+  //     return (
+  //       <div className="min-h-screen flex items-center justify-center">
+  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  //       </div>
+  //     );
+  //   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 via-blue-100 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-black px-4 py-12">
@@ -129,9 +133,8 @@ const Register = () => {
                 value={formData[name]}
                 onChange={handleInputChange}
                 placeholder={placeholder}
-                className={`w-full pl-10 pr-3 py-2 rounded-md border ${
-                  errors[name] ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
-                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none`}
+                className={`w-full pl-10 pr-3 py-2 rounded-md border ${errors[name] ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                  } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none`}
               />
               {errors[name] && <p className="mt-1 text-sm text-red-600">{errors[name]}</p>}
             </div>
@@ -161,9 +164,8 @@ const Register = () => {
                 value={formData[name]}
                 onChange={handleInputChange}
                 placeholder={placeholder}
-                className={`w-full pl-10 pr-10 py-2 rounded-md border ${
-                  errors[name] ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
-                } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none`}
+                className={`w-full pl-10 pr-10 py-2 rounded-md border ${errors[name] ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                  } bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none`}
               />
               <button type="button" className="absolute top-2.5 right-3 text-gray-400" onClick={toggle}>
                 {show ? <EyeOff size={20} /> : <Eye size={20} />}

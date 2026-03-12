@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
+import toast from 'react-hot-toast';
 import ConversationCard from '../components/ConversationCard';
 import {
   useGetConversations,
@@ -27,13 +28,27 @@ const Conversation = () => {
     data: conversationsRes,
     isLoading: conversationsLoading,
     isError: conversationsError,
+    error: conversationsErr,
   } = useGetConversations(page, limit, debouncedSearch);
 
   const {
     data: statsRes,
     isLoading: statsLoading,
     isError: statsError,
+    error: statsErr,
   } = useGetConversationsStats();
+
+  useEffect(() => {
+    if (conversationsError) {
+      toast.error(conversationsErr?.response?.data?.message || 'Failed to load conversations');
+    }
+  }, [conversationsError]);
+
+  useEffect(() => {
+    if (statsError) {
+      toast.error(statsErr?.response?.data?.message || 'Failed to load conversation stats');
+    }
+  }, [statsError]);
 
   /* Safe data extraction */
   const conversations = conversationsRes?.data?.conversations ?? [];
@@ -61,7 +76,7 @@ const Conversation = () => {
       {/* Stats Section */}
       {statsLoading ? (
         <div className="text-center text-gray-500">Loading statistics...</div>
-      ) :  (
+      ) : (
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             value={stats.totalConversations}

@@ -43,11 +43,14 @@ const LoginPage = () => {
           setRequiresOtp(true);
           setUserId(response.data.userId);
           setError('');
+          toast.success('OTP sent to your email');
         } else if (response.data?.accessToken) {
           // Login successful without OTP
           auth.setAccessToken(response.data.accessToken);
+          toast.success('Logged in successfully');
           navigate('/dashboard');
         } else {
+          toast.error(response.message || 'Login failed');
           setError(response.message || 'Login failed');
         }
       } else {
@@ -55,7 +58,9 @@ const LoginPage = () => {
           // Show email verification modal
           setEmailForVerification(formData.email);
           setShowEmailVerificationModal(true);
+          toast.error('Please verify your email first');
         } else {
+          toast.error(response.message || 'Login failed');
           setError(response.message || 'Login failed');
         }
       }
@@ -64,7 +69,9 @@ const LoginPage = () => {
       if (errorMessage.includes('Email not verified') || err.response?.status === 403) {
         setEmailForVerification(formData.email);
         setShowEmailVerificationModal(true);
+        toast.error('Please verify your email first');
       } else {
+        toast.error(errorMessage);
         setError(errorMessage);
       }
       console.error('Login error:', err);
@@ -79,7 +86,7 @@ const LoginPage = () => {
       setError('Please enter OTP');
       return;
     }
-    
+
     verifyLoginEmail(
       { userId, otp },
       {
@@ -88,16 +95,21 @@ const LoginPage = () => {
             const accessToken = localStorage.getItem('accessToken');
             if (accessToken) {
               auth.setAccessToken(accessToken);
+              toast.success('Login successful!');
               navigate('/dashboard');
             } else {
+              toast.error(response.message || 'OTP verification failed');
               setError(response.message || 'OTP verification failed');
             }
           } else {
+            toast.error(response.message || 'OTP verification failed');
             setError(response.message || 'OTP verification failed');
           }
         },
         onError: (err) => {
-          setError(err.response?.data?.message || 'OTP verification failed. Please try again.');
+          const msg = err.response?.data?.message || 'OTP verification failed. Please try again.';
+          toast.error(msg);
+          setError(msg);
           console.error('OTP verification error:', err);
         },
       }
@@ -240,7 +252,7 @@ const LoginPage = () => {
           </form>
         )}
       </div>
-      
+
       <EmailVerificationModal
         isOpen={showEmailVerificationModal}
         onClose={() => setShowEmailVerificationModal(false)}

@@ -33,7 +33,14 @@ const ConversationCard = ({ conversation }) => {
   const handleDelete = (e) => {
     e.stopPropagation();
     if (window.confirm('Are you sure you want to delete this conversation?')) {
-      deleteConversation(conversation._id);
+      deleteConversation(conversation._id, {
+        onSuccess: () => {
+          toast.success('Conversation deleted successfully');
+        },
+        onError: (err) => {
+          toast.error(err?.response?.data?.message || 'Failed to delete conversation');
+        },
+      });
     }
   };
 
@@ -80,7 +87,7 @@ const ConversationCard = ({ conversation }) => {
   const documentName = conversation.documentId?.filename || 'Unknown Document';
 
   return (
-    <div 
+    <div
       onClick={handleCardClick}
       className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-200 flex justify-between items-start cursor-pointer"
     >

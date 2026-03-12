@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Mail, X } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useResendVerifyEmail, useEmailverification } from '../hooks/Auth/useMutation';
 import { useAuth } from '../hooks/Auth/useAuth';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +20,7 @@ const EmailVerificationModal = ({ isOpen, onClose, email: initialEmail }) => {
   const handleEmailSubmit = (e) => {
     e.preventDefault();
     if (!email.trim()) {
+      toast.error('Please enter email');
       setError('Please enter email');
       return;
     }
@@ -30,12 +32,16 @@ const EmailVerificationModal = ({ isOpen, onClose, email: initialEmail }) => {
           setUserId(response.data?.userId);
           setStep('otp');
           setError('');
+          toast.success('Verification code sent to your email');
         } else {
+          toast.error(response.message || 'Failed to send OTP');
           setError(response.message || 'Failed to send OTP');
         }
       },
       onError: (err) => {
-        setError(err.response?.data?.message || 'Failed to send OTP. Please try again.');
+        const msg = err.response?.data?.message || 'Failed to send OTP. Please try again.';
+        toast.error(msg);
+        setError(msg);
         console.error('Resend email error:', err);
       },
     });
@@ -44,6 +50,7 @@ const EmailVerificationModal = ({ isOpen, onClose, email: initialEmail }) => {
   const handleOtpSubmit = (e) => {
     e.preventDefault();
     if (!otp.trim()) {
+      toast.error('Please enter OTP');
       setError('Please enter OTP');
       return;
     }
@@ -57,17 +64,22 @@ const EmailVerificationModal = ({ isOpen, onClose, email: initialEmail }) => {
             const accessToken = localStorage.getItem('accessToken');
             if (accessToken) {
               auth.setAccessToken(accessToken);
+              toast.success('Email verified successfully!');
               onClose();
               navigate('/dashboard');
             } else {
+              toast.error(response.message || 'Email verification failed');
               setError(response.message || 'Email verification failed');
             }
           } else {
+            toast.error(response.message || 'Email verification failed');
             setError(response.message || 'Email verification failed');
           }
         },
         onError: (err) => {
-          setError(err.response?.data?.message || 'Email verification failed. Please try again.');
+          const msg = err.response?.data?.message || 'Email verification failed. Please try again.';
+          toast.error(msg);
+          setError(msg);
           console.error('OTP verification error:', err);
         },
       }
@@ -80,13 +92,16 @@ const EmailVerificationModal = ({ isOpen, onClose, email: initialEmail }) => {
         if (response.success) {
           setError('');
           setOtp('');
-          alert(response.message || 'OTP resent successfully');
+          toast.success(response.message || 'OTP resent successfully');
         } else {
+          toast.error(response.message || 'Failed to resend OTP');
           setError(response.message || 'Failed to resend OTP');
         }
       },
       onError: (err) => {
-        setError(err.response?.data?.message || 'Failed to resend OTP');
+        const msg = err.response?.data?.message || 'Failed to resend OTP';
+        toast.error(msg);
+        setError(msg);
       },
     });
   };
