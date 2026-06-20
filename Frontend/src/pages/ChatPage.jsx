@@ -66,7 +66,7 @@ const ChatPage = () => {
     }
 
     return (
-        <div className="flex flex-col h-screen bg-transparent">
+        <div className="flex h-full min-h-0 flex-col overflow-hidden bg-transparent">
             <style>{`
                     .chat-scrollbar {
                         overflow-y: auto;
@@ -79,20 +79,20 @@ const ChatPage = () => {
                     `}</style>
 
             {/* Header */}
-            <div className=" px-4 sm:px-6 py-4">
-                <div className="max-w-5xl mx-auto flex items-center justify-between">
-                    <div className="flex items-center space-x-4 flex-1">
+            <div className="px-4 sm:px-6 py-4">
+                <div className="max-w-5xl mx-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
                         <button
                             onClick={() => navigate(-1)}
-                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                            className="shrink-0 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                         >
                             <ArrowLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
                         </button>
                         <div className="min-w-0">
-                            <h1 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white truncate">
+                            <h1 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white break-words sm:truncate">
                                 {conversationHistory?.data?.title || 'Start Conversation'}
                             </h1>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                            <p className="text-sm text-gray-500 dark:text-gray-400 break-words">
                                 {conversationHistory?.data?.documentInfo?.name || ''}
                             </p>
                         </div>
@@ -112,7 +112,7 @@ const ChatPage = () => {
                             }
                         }}
                         disabled={deleteMessagesMutation.isPending}
-                        className={`p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors ${deleteMessagesMutation.isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`self-end sm:self-auto p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors ${deleteMessagesMutation.isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                         <Trash2 className="h-5 w-5 text-gray-600 dark:text-gray-400" />
                     </button>
@@ -120,8 +120,8 @@ const ChatPage = () => {
             </div>
 
             {/* Messages Container */}
-            <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-4 chat-scrollbar bg-transparent">
-                <div className="max-w-5xl mx-auto space-y-4">
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4 chat-scrollbar bg-transparent">
+                <div className="max-w-5xl mx-auto w-full space-y-4">
                     {historyLoading ? (
                         <div className="space-y-4">
                             {[...Array(3)].map((_, index) => (
@@ -151,7 +151,7 @@ const ChatPage = () => {
                                 className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                             >
                                 <div
-                                    className={`max-w-xs sm:max-w-md lg:max-w-2xl px-4 py-3 rounded-lg ${message.type === 'user'
+                                    className={`w-full max-w-[92%] sm:max-w-md lg:max-w-2xl px-4 py-3 rounded-lg break-words ${message.type === 'user'
                                         ? 'bg-indigo-600 dark:bg-indigo-500 text-white rounded-br-none'
                                         : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-bl-none'
                                         }`}
@@ -199,7 +199,7 @@ const ChatPage = () => {
 
                     {askDoubtMutation.isPending && (
                         <div className="flex justify-start">
-                            <div className="bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-lg rounded-bl-none space-y-2">
+                            <div className="bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-lg rounded-bl-none space-y-2 max-w-[92%] sm:max-w-md lg:max-w-2xl">
                                 <div className="flex space-x-2">
                                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
@@ -212,21 +212,21 @@ const ChatPage = () => {
             </div>
 
             {/* Input Area */}
-            <div className="bg-transparent px-4 sm:px-6 py-4 backdrop-blur-sm">
-                <div className="max-w-5xl mx-auto">
-                    <div className="flex space-x-3">
+            <div className="bg-transparent px-4 sm:px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] backdrop-blur-sm">
+                <div className="max-w-5xl mx-auto w-full">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:space-x-3">
                         <input
                             type="text"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                             placeholder="Ask a question about your document..."
-                            className="flex-1 px-4 py-3 rounded-lg border border-gray-700 dark:bg-gray-800/50 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all backdrop-blur-sm"
+                            className="w-full min-w-0 flex-1 px-4 py-3 rounded-lg border border-gray-700 dark:bg-gray-800/50 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all backdrop-blur-sm"
                         />
                         <button
                             onClick={handleSendMessage}
                             disabled={askDoubtMutation.isPending || !input.trim()}
-                            className="px-4 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white rounded-lg transition-colors flex items-center justify-center space-x-2"
+                            className="w-full sm:w-auto px-4 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 dark:disabled:bg-gray-700 text-white rounded-lg transition-colors flex items-center justify-center space-x-2"
                         >
                             <Send className="h-5 w-5" />
                         </button>

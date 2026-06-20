@@ -38,7 +38,7 @@ const Layout = ({ children }) => {
   };
 
   // Don't show navigation for auth pages
-  const isAuthPage = 
+  const isAuthPage =
     ['/login', '/register', '/forgot'].includes(location.pathname) ||
     location.pathname.startsWith('/email/verify/');
 
@@ -48,7 +48,7 @@ const Layout = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col transition-colors duration-200">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col overflow-x-hidden transition-colors duration-200">
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -182,7 +182,7 @@ const Layout = ({ children }) => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+      <main className="flex-1 max-w-7xl mx-auto w-full min-h-0 overflow-x-hidden px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         {children}
       </main>
 
